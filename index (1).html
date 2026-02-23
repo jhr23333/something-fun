@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>专属小宇宙 💕</title>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --rose: #ff6b8a;
+    --blush: #ffb3c6;
+    --cream: #fff8fa;
+    --gold: #ffd700;
+    --deep: #2d1b2e;
+    --lavender: #c9a9d4;
+  }
+
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  body {
+    background: var(--cream);
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    font-family: 'Noto Serif SC', serif;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Animated background */
+  .bg {
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 40%, rgba(255,107,138,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 15%, rgba(201,169,212,0.22) 0%, transparent 50%),
+      radial-gradient(ellipse at 55% 85%, rgba(255,179,198,0.18) 0%, transparent 50%),
+      #fff8fa;
+    z-index: 0;
+  }
+
+  /* Falling petals */
+  .petal {
+    position: fixed;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 1;
+    animation: fall linear infinite;
+    user-select: none;
+  }
+  @keyframes fall {
+    0%   { transform: translateY(-30px) rotate(0deg) scale(1);   opacity: 0.85; }
+    100% { transform: translateY(110vh) rotate(540deg) scale(0.6); opacity: 0; }
+  }
+
+  /* Stars */
+  .star {
+    position: fixed;
+    width: 5px; height: 5px;
+    background: var(--rose);
+    border-radius: 50%;
+    opacity: 0;
+    animation: twinkle ease-in-out infinite;
+  }
+  @keyframes twinkle {
+    0%,100% { opacity: 0; transform: scale(0.5); }
+    50%      { opacity: 0.4; transform: scale(1.8); }
+  }
+
+  /* Layout */
+  .container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem 1.5rem 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.6rem;
+  }
+
+  /* Title */
+  .title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 2.4rem;
+    color: var(--deep);
+    text-align: center;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+  }
+  .title .heart {
+    display: inline-block;
+    animation: heartbeat 2s ease-in-out infinite;
+    color: var(--rose);
+  }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); }
+    50%      { transform: scale(1.25); }
+  }
+
+  .subtitle {
+    font-size: 0.82rem;
+    color: #c4a0b0;
+    letter-spacing: 0.12em;
+    margin-top: -1rem;
+    text-align: center;
+  }
+
+  /* Mood pills */
+  .mood-row {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+  }
+  .mood-btn {
+    background: white;
+    border: 2px solid #f0dde4;
+    border-radius: 50px;
+    padding: 0.55rem 1.1rem;
+    font-size: 0.82rem;
+    font-family: 'Noto Serif SC', serif;
+    color: #b09aa4;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 2px 10px rgba(255,107,138,0.07);
+    white-space: nowrap;
+  }
+  .mood-btn:active { transform: scale(0.94); }
+  .mood-btn.active {
+    border-color: var(--rose);
+    color: var(--rose);
+    background: rgba(255,107,138,0.06);
+    box-shadow: 0 4px 14px rgba(255,107,138,0.18);
+  }
+
+  /* Card */
+  .card {
+    background: white;
+    border-radius: 28px;
+    padding: 2.2rem 1.8rem;
+    width: 100%;
+    box-shadow:
+      0 6px 30px rgba(255,107,138,0.1),
+      0 0 0 1px rgba(255,107,138,0.07),
+      inset 0 1px 0 rgba(255,255,255,0.9);
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    min-height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blush), var(--rose), var(--lavender), var(--blush));
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    opacity: 0;
+    transform: translateY(12px) scale(0.97);
+    transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .message.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .message-emoji {
+    font-size: 3rem;
+    animation: floatEmoji 3.5s ease-in-out infinite;
+    line-height: 1;
+  }
+  @keyframes floatEmoji {
+    0%,100% { transform: translateY(0) rotate(-4deg); }
+    50%      { transform: translateY(-9px) rotate(4deg); }
+  }
+  .message-text {
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: var(--deep);
+    font-weight: 300;
+    letter-spacing: 0.04em;
+  }
+
+  /* Main button */
+  .main-btn {
+    background: linear-gradient(135deg, var(--rose) 0%, #ff8fa3 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 1.05rem 2.8rem;
+    font-size: 1.08rem;
+    font-family: 'Ma Shan Zheng', cursive;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(255,107,138,0.42), 0 2px 6px rgba(255,107,138,0.25);
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    max-width: 280px;
+  }
+  .main-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.22) 0%, transparent 55%);
+    border-radius: 50px;
+  }
+  .main-btn:active {
+    transform: scale(0.95);
+    box-shadow: 0 4px 14px rgba(255,107,138,0.3);
+  }
+
+  /* Counter */
+  .counter {
+    font-size: 0.78rem;
+    color: #d4b0bc;
+    letter-spacing: 0.1em;
+    font-style: italic;
+    margin-top: -0.5rem;
+  }
+
+  /* Floating hearts */
+  .float-heart {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9000;
+    font-size: 1.6rem;
+    animation: floatUp 1.3s ease-out forwards;
+    user-select: none;
+  }
+  @keyframes floatUp {
+    0%   { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+    100% { opacity: 0; transform: translateY(-130px) scale(1.6) rotate(20deg); }
+  }
+
+  /* Confetti */
+  .confetti-piece {
+    position: fixed;
+    width: 9px; height: 9px;
+    border-radius: 2px;
+    pointer-events: none;
+    z-index: 8000;
+    animation: confettiFall 2.2s ease-in forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translateY(-20px) rotateZ(0deg) rotateX(0deg); }
+    100% { opacity: 0; transform: translateY(100vh) rotateZ(720deg) rotateX(360deg); }
+  }
+
+  /* Ripple on button tap */
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.35);
+    transform: scale(0);
+    animation: rippleAnim 0.6s linear;
+    pointer-events: none;
+  }
+  @keyframes rippleAnim {
+    to { transform: scale(4); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+
+<div class="container">
+  <div class="title">
+    专属小宇宙<br>
+    <span class="heart">💕</span>
+  </div>
+  <p class="subtitle">这里只有你的开心</p>
+
+  <div class="mood-row">
+    <button class="mood-btn active" onclick="setMood('sad',this)">😢 难过</button>
+    <button class="mood-btn" onclick="setMood('tired',this)">😮‍💨 好累</button>
+    <button class="mood-btn" onclick="setMood('bored',this)">😑 无聊</button>
+    <button class="mood-btn" onclick="setMood('stressed',this)">😤 压力大</button>
+  </div>
+
+  <div class="card">
+    <div class="message show" id="msg">
+      <span class="message-emoji" id="msgEmoji">💌</span>
+      <span class="message-text" id="msgText">点击下面的按钮，给你一份专属惊喜～</span>
+    </div>
+  </div>
+
+  <button class="main-btn" id="mainBtn" onclick="showMessage(event)">
+    ✨ 给我一句话 ✨
+  </button>
+
+  <p class="counter">已被哄开心 <span id="cnt">0</span> 次 🌸</p>
+</div>
+
+<script>
+const messages = {
+  sad: [
+    { emoji: "🌧️", text: "下雨了，但雨后的彩虹只属于你。" },
+    { emoji: "🫂", text: "难过的时候，想象我就在你旁边抱着你。" },
+    { emoji: "🍵", text: "泡一杯热茶，坐下来，你已经很厉害了。" },
+    { emoji: "🌙", text: "今天的眼泪，是在给明天的笑容清路。" },
+    { emoji: "🌷", text: "你哭的时候也很好看，但我更想看你笑。" },
+    { emoji: "🐣", text: "再坚硬的壳，里面住的都是软软的你。" },
+    { emoji: "🌊", text: "情绪像海浪，来了，但也会退的。" },
+  ],
+  tired: [
+    { emoji: "🛋️", text: "躺平吧，今天已经足够努力了。" },
+    { emoji: "🍫", text: "吃块巧克力，世界会好一点点的。" },
+    { emoji: "🌟", text: "累了就歇着，星星也要充电的。" },
+    { emoji: "🧸", text: "抱着枕头睡一觉，明天又是满血状态。" },
+    { emoji: "☁️", text: "云也会有累的时候，但它还是飘着呢。" },
+    { emoji: "🌸", text: "不用撑着，放松下来的你同样很美。" },
+  ],
+  bored: [
+    { emoji: "🎪", text: "无聊说明你太酷了，普通的事情吸引不了你。" },
+    { emoji: "🌈", text: "闭上眼睛想一想：你最想去哪里玩？" },
+    { emoji: "🍕", text: "无聊最好的治疗法：点外卖然后期待它到来。" },
+    { emoji: "🦋", text: "你的世界从来不无聊，只是在等下一个精彩。" },
+    { emoji: "🎲", text: "无聊是大脑在提示你：该宠一下自己了。" },
+    { emoji: "🌙", text: "发呆也是一种才能，你很有才能。" },
+  ],
+  stressed: [
+    { emoji: "🌊", text: "深呼吸，再难也只是一段时间而已。" },
+    { emoji: "🏔️", text: "山很高，但你腿长，能走到顶的。" },
+    { emoji: "🌸", text: "放下那些不属于你的包袱，轻装上阵。" },
+    { emoji: "🦁", text: "你比你想象的更强大，这不是安慰，是事实。" },
+    { emoji: "✨", text: "压力再大，也大不过你的可爱。" },
+    { emoji: "🎋", text: "竹子压弯了也不断，你也一样有韧劲。" },
+  ]
+};
+
+let currentMood = 'sad';
+let usedIndexes = {};
+let count = 0;
+
+function setMood(mood, el) {
+  currentMood = mood;
+  usedIndexes[mood] = [];
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function showMessage(e) {
+  // Ripple effect
+  const btn = document.getElementById('mainBtn');
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top  = (e.clientY - rect.top  - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 700);
+
+  // Pick message
+  const pool = messages[currentMood];
+  if (!usedIndexes[currentMood]) usedIndexes[currentMood] = [];
+  if (usedIndexes[currentMood].length >= pool.length) usedIndexes[currentMood] = [];
+  let idx;
+  do { idx = Math.floor(Math.random() * pool.length); }
+  while (usedIndexes[currentMood].includes(idx));
+  usedIndexes[currentMood].push(idx);
+
+  const item = pool[idx];
+  const msgEl = document.getElementById('msg');
+  msgEl.classList.remove('show');
+  setTimeout(() => {
+    document.getElementById('msgEmoji').textContent = item.emoji;
+    document.getElementById('msgText').textContent  = item.text;
+    msgEl.classList.add('show');
+  }, 280);
+
+  count++;
+  document.getElementById('cnt').textContent = count;
+  spawnHearts(e.clientX, e.clientY);
+  if (count % 5 === 0) launchConfetti();
+}
+
+// Touch: spawn hearts on tap anywhere
+document.addEventListener('touchstart', (e) => {
+  const t = e.touches[0];
+  if (!e.target.closest('button')) {
+    spawnHearts(t.clientX, t.clientY);
+  }
+}, { passive: true });
+
+function spawnHearts(x, y) {
+  const emojis = ['💕','🌸','✨','💗','🌷','⭐','🩷'];
+  for (let i = 0; i < 7; i++) {
+    setTimeout(() => {
+      const h = document.createElement('div');
+      h.className = 'float-heart';
+      h.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      const ox = (Math.random() - 0.5) * 130;
+      const oy = (Math.random() - 0.5) * 50;
+      h.style.left = (x + ox) + 'px';
+      h.style.top  = (y + oy) + 'px';
+      document.body.appendChild(h);
+      setTimeout(() => h.remove(), 1400);
+    }, i * 55);
+  }
+}
+
+function launchConfetti() {
+  const colors = ['#ff6b8a','#ffb3c6','#ffd700','#c9a9d4','#ff8fa3','#a8e6cf'];
+  for (let i = 0; i < 40; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti-piece';
+      c.style.left = (10 + Math.random() * 80) + 'vw';
+      c.style.top  = '-10px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.animationDelay = (Math.random() * 0.4) + 's';
+      c.style.animationDuration = (1.6 + Math.random() * 0.8) + 's';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 2500);
+    }, i * 30);
+  }
+}
+
+// Falling petals
+const petalEmojis = ['🌸','🌺','🌷','✿','🍀','🌼'];
+function createPetal() {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+  p.style.left = (Math.random() * 100) + 'vw';
+  p.style.fontSize = (0.7 + Math.random() * 0.9) + 'rem';
+  p.style.animationDuration  = (6 + Math.random() * 8) + 's';
+  p.style.animationDelay     = (Math.random() * 3) + 's';
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), 18000);
+}
+setInterval(createPetal, 1400);
+for (let i = 0; i < 6; i++) setTimeout(createPetal, i * 200);
+
+// Stars
+for (let i = 0; i < 18; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  s.style.left = Math.random() * 100 + 'vw';
+  s.style.top  = Math.random() * 100 + 'vh';
+  s.style.animationDuration = (2 + Math.random() * 4) + 's';
+  s.style.animationDelay    = (Math.random() * 5) + 's';
+  document.body.appendChild(s);
+}
+</script>
+</body>
+</html>
